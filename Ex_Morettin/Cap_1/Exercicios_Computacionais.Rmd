@@ -1,0 +1,115 @@
+---
+title: "Exercícios Computacionais"
+author: "Guilherme Pazian"
+date: "15 de março de 2018"
+output: html_document
+---
+
+
+```{r mensage=FALSE,warning=FALSE}
+
+```
+
+
+#2 (referente à série $A_10$:Índice de Custo de Vida no Município de São Paulo; observações mensais de janeiro de 1970 a junho de 1980)
+
+```{r}
+M_ICV <- read.csv("ICV.csv")
+head(M_ICV)
+ts_M_ICV <- ts(M_ICV$ICV,start = 1970,frequency = 12)
+work <- "ts_M_ICV"
+print(ts_M_ICV)
+
+```
+
+##a)
+Não
+```{r}
+ts.plot(ts_M_ICV)
+
+```
+
+Note pelo gráfico acima que a série não é estacionária.
+##b)
+Não
+```{r}
+#primeira diferenciação
+
+dif_ts_M_ICV <- diff(ts_M_ICV)
+
+ts.plot(dif_ts_M_ICV)
+
+append(work,"dif_ts_M_ICV")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 1 não é estacionária.
+
+##c)
+Não
+```{r}
+#segunda diferenciação
+
+dif2_ts_M_ICV <- diff(ts_M_ICV,differences = 2)
+
+ts.plot(dif2_ts_M_ICV)
+
+append(work,"dif2_ts_M_ICV")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 2 não é estacionária.
+
+#3 (referente à série $A_7$ (a): Temperatura (ºC) ao meio dia, na cidade de São Paulo; observações diárias de 1ºde janeiro a 31 de dezembro de 1997)
+
+```{r}
+#abra o arquivo na url "https://www.ime.usp.br/~pam/temperatura.xls" o salve em formato .xls e .csv na pasta de trabalho
+
+
+```
+
+```{r}
+atm_temp_data <- read.csv("Atmosfera.csv")
+head(atm_temp_data)
+#View(atm_temp_data)
+ts_atm_temp_data <- ts(atm_temp_data$temperatura,start = c(1997,1,1),frequency = 365.25)
+work <- "atm_temp_data"
+print(ts_atm_temp_data)
+
+```
+
+##a)
+Não
+```{r}
+ts.plot(ts_M_ICV)
+
+```
+
+Note pelo gráfico acima que a série não é estacionária.
+##b)
+Não
+```{r}
+#primeira diferenciação
+
+dif_ts_M_ICV <- diff(ts_M_ICV)
+
+ts.plot(dif_ts_M_ICV)
+
+append(work,"dif_ts_M_ICV")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 1 não é estacionária.
+
+##c)
+Não
+```{r}
+#segunda diferenciação
+
+dif2_ts_M_ICV <- diff(ts_M_ICV,differences = 2)
+
+ts.plot(dif2_ts_M_ICV)
+
+append(work,"dif2_ts_M_ICV")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 2 não é estacionária.
+
+
