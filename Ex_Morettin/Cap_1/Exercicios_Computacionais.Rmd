@@ -11,7 +11,8 @@ output: html_document
 ```
 
 
-#2 (referente à série $A_10$:Índice de Custo de Vida no Município de São Paulo; observações mensais de janeiro de 1970 a junho de 1980)
+#2 
+###(referente à série $A_{10}$:Índice de Custo de Vida no Município de São Paulo; observações mensais de janeiro de 1970 a junho de 1980)
 
 ```{r}
 M_ICV <- read.csv("ICV.csv")
@@ -58,7 +59,8 @@ append(work,"dif2_ts_M_ICV")
 
 Note pelo gráfico acima que a série das diferenças de ordem 2 não é estacionária.
 
-#3 (referente à série $A_7$ (a): Temperatura (ºC) ao meio dia, na cidade de São Paulo; observações diárias de 1ºde janeiro a 31 de dezembro de 1997)
+#3 
+###(referente à série $A_7$ (a): Temperatura (ºC) ao meio dia, na cidade de São Paulo; observações diárias de 1ºde janeiro a 31 de dezembro de 1997)
 
 ```{r}
 #abra o arquivo na url "https://www.ime.usp.br/~pam/temperatura.xls" o salve em formato .xls e .csv na pasta de trabalho
@@ -69,8 +71,9 @@ Note pelo gráfico acima que a série das diferenças de ordem 2 não é estacio
 ```{r}
 atm_temp_data <- read.csv("Atmosfera.csv")
 head(atm_temp_data)
+nrow(atm_temp_data)
 #View(atm_temp_data)
-ts_atm_temp_data <- ts(atm_temp_data$temperatura,start = c(1997,1,1),frequency = 365.25)
+ts_atm_temp_data <- ts(atm_temp_data$temperatura,start = c(1997,1,1),frequency = 365)
 work <- "atm_temp_data"
 print(ts_atm_temp_data)
 
@@ -79,7 +82,7 @@ print(ts_atm_temp_data)
 ##a)
 Não
 ```{r}
-ts.plot(ts_M_ICV)
+ts.plot(ts_atm_temp_data)
 
 ```
 
@@ -89,27 +92,181 @@ Não
 ```{r}
 #primeira diferenciação
 
-dif_ts_M_ICV <- diff(ts_M_ICV)
+dif_ts_atm_temp_data <- diff(ts_atm_temp_data)
 
-ts.plot(dif_ts_M_ICV)
+ts.plot(dif_ts_atm_temp_data)
 
-append(work,"dif_ts_M_ICV")
+append(work,"dif_ts_atm_temp_data")
 ```
 
-Note pelo gráfico acima que a série das diferenças de ordem 1 não é estacionária.
+Note pelo gráfico acima que a série das diferenças de ordem 1 embora pareça flutuar aleatóricamente ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo, portanto a série das diferenças não parece ser estacionária.
+
+
+```{r}
+#segunda diferenciação
+
+dif2_ts_atm_temp_data <- diff(ts_atm_temp_data,differences = 2)
+
+ts.plot(dif2_ts_atm_temp_data)
+
+append(work,"dif2_ts_atm_temp_data")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 2 parece não ser estacionária, uma vez que a variabilidade dos dados parece mudar ao longo do tempo. Note que o mesmo comportamento observado no gráfico das diferenças de ordem 1 estão presentes nesta série.
+
+
+
+#4 
+###(referente à série $A_{5}$ (Energia): Valores mensais do consumo de energia elétrica no estado do Espírito Santo, de janeiro de 1968 a setembro de 1979)
+
+
+```{r}
+#abra o arquivo na url "https://www.ime.usp.br/~pam/ENERGIA.XLS" o salve em formato .xls e .csv na pasta de trabalho
+
+
+```
+
+```{r}
+energia_data <- read.csv("ENERGIA.csv")
+head(energia_data)
+nrow(energia_data)
+#View(atm_temp_data)
+ts_energia_data <- ts(energia_data$Energia,start = c(1968,1),end = c(1979,9) ,frequency = 12)
+work <- "ts_energia_data"
+print(ts_energia_data)
+
+```
+
+
+##a)
+Não,sim.
+```{r}
+ts.plot(ts_energia_data)
+
+```
+
+Note pelo gráfico acima que a série não é estacionária e parece apresentar uma tendencia aproximadamente exponencial positiva.
+##b)
+Não
+```{r}
+#primeira diferenciação
+
+dif_ts_energia_data <- diff(ts_energia_data)
+
+ts.plot(dif_ts_energia_data)
+
+append(work,"dif_ts_energia_data")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 1 embora pareça flutuar aleatóricamente ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo, portanto a série das diferenças não parece ser estacionária.
+
+
+```{r}
+#segunda diferenciação
+
+dif2_ts_energia_data <- diff(ts_energia_data,differences = 2)
+
+ts.plot(dif2_ts_energia_data)
+
+append(work,"dif2_ts_energia_data")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 2 parece não ser estacionária, uma vez que a variabilidade dos dados parece mudar ao longo do tempo. Note que o mesmo comportamento observado no gráfico das diferenças de ordem 1 estão presentes nesta série.
 
 ##c)
 Não
 ```{r}
-#segunda diferenciação
+log_ts_energia_data <- log(ts_energia_data)
 
-dif2_ts_M_ICV <- diff(ts_M_ICV,differences = 2)
+ts.plot(log_ts_energia_data)
+```
+Note pelo gráfico acima que a série não é estacionária e parece apresentar uma tendencia aproximadamente linear positiva.
 
-ts.plot(dif2_ts_M_ICV)
+##d)
+Não
+```{r}
+dif_log_ts_energia_data <- diff(log_ts_energia_data)
 
-append(work,"dif2_ts_M_ICV")
+ts.plot(dif_log_ts_energia_data)
 ```
 
-Note pelo gráfico acima que a série das diferenças de ordem 2 não é estacionária.
+Note pelo gráfico acima que a série das diferenças de ordem 1 do log da série "Energia" embora pareça flutuar aleatóricamente ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo (embora seja aparententemente menor em relação à variabilidade apresentada na diferença de ordem 1  da série original), portanto a série das diferenças não parece ser estacionária.
+
+
+#5 
+###(referente à série $A_{9}$ (D-PETRO): Preços diários das ações da Petrobrás PN, de 03/01/1995 a 27/12/2000)
+
+
+```{r}
+#acesse os dados atravez da url "https://www.ime.usp.br/~pam/D-PETRO" copie e cole os dados em um arquivo .txt na pasta de trabalho
+
+
+```
+
+```{r}
+D_Petro <- read.csv("D-PETRO.txt",header = FALSE)
+head(D_Petro)
+nrow(D_Petro)
+#View(atm_temp_data)
+ts_D_Petro <- ts(D_Petro ,start = c(1995,03,01),end = c(2000,27,12) ,frequency =365)
+work <- "ts_D_Petro"
+print(ts_D_Petro)
+
+```
+
+
+##a)
+Não,sim.
+```{r}
+ts.plot(ts_energia_data)
+
+```
+
+Note pelo gráfico acima que a série não é estacionária e parece apresentar uma tendencia aproximadamente exponencial positiva.
+##b)
+Não
+```{r}
+#primeira diferenciação
+
+dif_ts_energia_data <- diff(ts_energia_data)
+
+ts.plot(dif_ts_energia_data)
+
+append(work,"dif_ts_energia_data")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 1 embora pareça flutuar aleatóricamente ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo, portanto a série das diferenças não parece ser estacionária.
+
+
+```{r}
+#segunda diferenciação
+
+dif2_ts_energia_data <- diff(ts_energia_data,differences = 2)
+
+ts.plot(dif2_ts_energia_data)
+
+append(work,"dif2_ts_energia_data")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 2 parece não ser estacionária, uma vez que a variabilidade dos dados parece mudar ao longo do tempo. Note que o mesmo comportamento observado no gráfico das diferenças de ordem 1 estão presentes nesta série.
+
+##c)
+Não
+```{r}
+log_ts_energia_data <- log(ts_energia_data)
+
+ts.plot(log_ts_energia_data)
+```
+Note pelo gráfico acima que a série não é estacionária e parece apresentar uma tendencia aproximadamente linear positiva.
+
+##d)
+Não
+```{r}
+dif_log_ts_energia_data <- diff(log_ts_energia_data)
+
+ts.plot(dif_log_ts_energia_data)
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 1 do log da série "Energia" embora pareça flutuar aleatóricamente ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo (embora seja aparententemente menor em relação à variabilidade apresentada na diferença de ordem 1  da série original), portanto a série das diferenças não parece ser estacionária.
 
 
