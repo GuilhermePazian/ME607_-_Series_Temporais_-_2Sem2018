@@ -210,42 +210,44 @@ nrow(D_Petro)
 #View(atm_temp_data)
 ts_D_Petro <- ts(D_Petro ,start = c(1995,03,01),end = c(2000,27,12) ,frequency =365)
 work <- "ts_D_Petro"
-print(ts_D_Petro)
+print(head(ts_D_Petro))
 
 ```
 
 
 ##a)
-Não,sim.
+Não parece estacionária. Sim, parece apresentar tendencia (local).
+
+
 ```{r}
-ts.plot(ts_energia_data)
+ts.plot(ts_D_Petro)
 
 ```
 
-Note pelo gráfico acima que a série não é estacionária e parece apresentar uma tendencia aproximadamente exponencial positiva.
+Note pelo gráfico acima que a série não é estacionária e parece apresentar tendencias locais.
 ##b)
-Não
+Não parece estacionária.
 ```{r}
 #primeira diferenciação
 
-dif_ts_energia_data <- diff(ts_energia_data)
+dif_ts_D_Petro <- diff(ts_D_Petro)
 
-ts.plot(dif_ts_energia_data)
+ts.plot(dif_ts_D_Petro)
 
-append(work,"dif_ts_energia_data")
+append(work,"dif_ts_D_Petro")
 ```
 
-Note pelo gráfico acima que a série das diferenças de ordem 1 embora pareça flutuar aleatóricamente ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo, portanto a série das diferenças não parece ser estacionária.
+Note pelo gráfico acima que a série das diferenças de ordem 1 embora pareça flutuar aleatóricamente (a menos de alguns pontos) ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo, portanto a série das diferenças não parece ser estacionária.
 
 
 ```{r}
 #segunda diferenciação
 
-dif2_ts_energia_data <- diff(ts_energia_data,differences = 2)
+dif2_ts_D_Petro <- diff(ts_D_Petro,differences = 2)
 
-ts.plot(dif2_ts_energia_data)
+ts.plot(dif2_ts_D_Petro)
 
-append(work,"dif2_ts_energia_data")
+append(work,"dif2_ts_D_Petro")
 ```
 
 Note pelo gráfico acima que a série das diferenças de ordem 2 parece não ser estacionária, uma vez que a variabilidade dos dados parece mudar ao longo do tempo. Note que o mesmo comportamento observado no gráfico das diferenças de ordem 1 estão presentes nesta série.
@@ -253,20 +255,99 @@ Note pelo gráfico acima que a série das diferenças de ordem 2 parece não ser
 ##c)
 Não
 ```{r}
-log_ts_energia_data <- log(ts_energia_data)
+log_ts_D_Petro <- log(ts_D_Petro)
 
-ts.plot(log_ts_energia_data)
+ts.plot(log_ts_D_Petro)
 ```
-Note pelo gráfico acima que a série não é estacionária e parece apresentar uma tendencia aproximadamente linear positiva.
+Note pelo gráfico acima que a série não é estacionária e parece apresentar tendencias locais.
 
 ##d)
 Não
 ```{r}
-dif_log_ts_energia_data <- diff(log_ts_energia_data)
+dif_log_ts_D_Petro <- diff(log_ts_D_Petro)
 
-ts.plot(dif_log_ts_energia_data)
+ts.plot(dif_log_ts_D_Petro)
 ```
 
-Note pelo gráfico acima que a série das diferenças de ordem 1 do log da série "Energia" embora pareça flutuar aleatóricamente ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo (embora seja aparententemente menor em relação à variabilidade apresentada na diferença de ordem 1  da série original), portanto a série das diferenças não parece ser estacionária.
+Note pelo gráfico acima que a série das diferenças de ordem 1 do log da série "D-Petro" embora pareça flutuar aleatóricamente ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo, portanto a série das diferenças não parece ser estacionária.
 
+
+#6 
+###(referente à série $A_{9}$ (M-IBV): Índice mensal da Bolsa de Valores de São Paulo, de junho de 1994 a agosto de 2001)
+
+
+```{r}
+#acesse os dados atravez da url "https://www.ime.usp.br/~pam/M-IBV-SP" copie e cole os dados em um arquivo .txt na pasta de trabalho
+
+
+```
+
+```{r}
+M_IBV <- read.csv("M-IBV.txt",header = FALSE,sep = "\t")
+colnames(M_IBV) <- c("SEP","IBOV","B3","CBOND")
+head(M_IBV)
+nrow(M_IBV)
+
+ts_M_IBV <- ts(M_IBV$IBOV ,start = c(1994,06),end = c(2001,08) ,frequency = 12)
+work <- "ts_M_IBV"
+print(head(ts_M_IBV))
+
+```
+
+
+##a)
+Não parece estacionária. Sim, parece apresentar tendencia (local).
+
+
+```{r}
+ts.plot(ts_M_IBV)
+
+```
+
+Note pelo gráfico acima que a série não é estacionária e parece apresentar tendencias locais.
+##b)
+Não parece estacionária.
+```{r}
+#primeira diferenciação
+
+dif_ts_M_IBV <- diff(ts_M_IBV)
+
+ts.plot(dif_ts_M_IBV)
+
+append(work,"dif_ts_M_IBV")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 1 apresenta uma diferença na variabilidade dos dados conforme o tempo, portanto a série das diferenças não parece ser estacionária.
+
+
+```{r}
+#segunda diferenciação
+
+dif2_ts_M_IBV <- diff(ts_M_IBV,differences = 2)
+
+ts.plot(dif2_ts_M_IBV)
+
+append(work,"dif2_ts_M_IBV")
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 2 parece não ser estacionária, uma vez que a variabilidade dos dados parece mudar ao longo do tempo. Note que o mesmo comportamento observado no gráfico das diferenças de ordem 1 estão presentes nesta série.
+
+##c)
+Não
+```{r}
+log_ts_M_IBV <- log(ts_M_IBV)
+
+ts.plot(log_ts_M_IBV)
+```
+Note pelo gráfico acima que a série não é estacionária e parece apresentar tendencias locais.
+
+##d)
+Não
+```{r}
+dif_log_ts_M_IBV <- diff(log_ts_M_IBV)
+
+ts.plot(dif_ts_M_IBV)
+```
+
+Note pelo gráfico acima que a série das diferenças de ordem 1 do log da série "M-IBV" embora pareça flutuar aleatóricamente ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo, portanto a série das diferenças não parece ser estacionária.
 
