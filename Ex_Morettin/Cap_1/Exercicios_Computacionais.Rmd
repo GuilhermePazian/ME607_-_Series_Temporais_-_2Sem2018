@@ -7,7 +7,15 @@ output: html_document
 
 
 ```{r mensage=FALSE,warning=FALSE}
+#pacotes utilizados
+pacotes <- c("moments","ggplot2")
+install.packages(pacotes)
+```
+```{r}
+#funções utilizadas
 
+library(moments)
+  Descritivas <- function (x) data.frame(media = mean(x),variancia = var(x),"desvio padrao" = sd(x),"Coeficinte Assimetria" = moments::skewness(x),"Curtose" = moments::kurtosis(x), "1ºquartil" = quantile(x,probs = .25),"2ºquartil (mediana)" = quantile(x,probs = .5),"3ºquartil" = quantile(x,probs = .75),"Mínimo" = min(x),"máximo" = max(x))
 ```
 
 
@@ -273,7 +281,7 @@ Note pelo gráfico acima que a série das diferenças de ordem 1 do log da séri
 
 
 #6 
-###(referente à série $A_{9}$ (M-IBV): Índice mensal da Bolsa de Valores de São Paulo, de junho de 1994 a agosto de 2001)
+###(referente à série $A_{9}$ (d) (M-IBV): Índice mensal da Bolsa de Valores de São Paulo, de junho de 1994 a agosto de 2001)
 
 
 ```{r}
@@ -351,3 +359,137 @@ ts.plot(dif_ts_M_IBV)
 
 Note pelo gráfico acima que a série das diferenças de ordem 1 do log da série "M-IBV" embora pareça flutuar aleatóricamente ao redor de uma média (neste caso parece razoável conjecturar que $\mu$ = 0), percebemos uma diferença na variabilidade dos dados conforme o tempo, portanto a série das diferenças não parece ser estacionária.
 
+#7 
+###(referente à série $A_{9}$ (c) (D-BANESPA) : Preços diários das ações do Banespa PN, de 03/01/1995 a 27/12/2000)
+
+
+```{r}
+#acesse os dados atravez da url "https://www.ime.usp.br/~pam/D-BANESPA" copie e cole os dados em um arquivo .txt na pasta de trabalho
+
+
+```
+
+```{r}
+D_Banespa <- read.csv("D-BANESPA.txt",header = FALSE,sep = "\t")
+head(D_Banespa)
+nrow(D_Banespa)
+
+ts_D_Banespa <- ts(D_Banespa ,start = c(1995,01,03),frequency = 252)
+length(ts_D_Banespa)
+work <- "ts_D_Banespa"
+print(head(ts_D_Banespa))
+```
+
+```{r}
+#gráfico da série
+end(ts_D_Banespa)
+start(ts_D_Banespa)
+frequency(ts_D_Banespa)
+ts.plot(ts_D_Banespa)
+```
+
+```{r}
+#grafico dos logs
+log_ts_D_Banespa <- log(ts_D_Banespa)
+
+ts.plot(log_ts_D_Banespa)
+```
+```{r}
+#retorno dos logs (log-retorno)
+
+log_retorno_D_Banespa <- diff(log_ts_D_Banespa)
+length(log_retorno_D_Banespa)
+
+ts.plot(log_retorno_D_Banespa)
+```
+
+###a)
+
+```{r}
+
+Descritivas(as.vector(log_retorno_D_Banespa))
+summary(log_retorno_D_Banespa)
+```
+##b)
+
+
+Qual dos gráficos abaixo estão certos??
+
+```{r}
+library(ggplot2)
+ggplot(data=as.data.frame(log_retorno_D_Banespa)) + geom_histogram(aes(x= V1,y = ..count../sum(..count..)),bins = 50) + stat_function(fun = dnorm,color="red",args=list(mean=mean(as.vector(data$x)),sd=sd(as.vector(data$x)))) + xlim(-.35,+.35) 
+
+```
+
+```{r}
+library(ggplot2)
+ggplot(data=as.data.frame(log_retorno_D_Banespa)) + geom_histogram(aes(x= V1,y = ..density..),bins = 50) + stat_function(fun = dnorm,color="red",args=list(mean=mean(as.vector(data$x)),sd=sd(as.vector(data$x)))) + xlim(-.35,+.35) 
+
+```
+
+```{r}
+library(ggplot2)
+ggplot(data=as.data.frame(log_retorno_D_Banespa)) + geom_histogram(aes(x=V1,y = ..count../sum(..count..)),bins = 50)
+```
+
+```{r}
+library(ggplot2)
+ggplot(data=as.data.frame(log_retorno_D_Banespa)) + geom_histogram(aes(x=V1,y = ..density..),bins = 50)
+
+```
+
+De qualquer maneira a distribuição da série parece ser lptocurtica, ou seja tem caldas mais leves que a distribuição normal e apresenta um "afinamento" maior em relação à distribuição normal.
+
+
+##c)
+
+```{r}
+length(log_retorno_D_Banespa) - 5*252
+
+n <- length(log_retorno_D_Banespa)/252
+n
+sum(log_retorno_D_Banespa)/n
+
+
+(252-4)/252 #faltaram 4 dias para formar 6 anos
+sum(log_retorno_D_Banespa)/5.9
+
+pregoes <- sum(245,248,249,246,246,248)
+pregoes #de 1995 até 2000 site do bovespa
+
+length(log_retorno_D_Banespa)
+
+length(log_retorno_D_Banespa) - pregoes
+
+sum(log_retorno_D_Banespa)/6
+
+prod(1+diff(ts_D_Banespa)/ts_D_Banespa) -1
+
+```
+A resposta do livro é simplesmente dividir a soma dos retornos por 6 `r sum(log_retorno_D_Banespa)/6`
+
+
+##d)
+
+
+```{r}
+prod(1+diff(ts_D_Banespa)/ts_D_Banespa) * 10000
+sum(diff(ts_D_Banespa)/ts_D_Banespa)
+
+
+10000*(as.double(D_Banespa[nrow(D_Banespa),1]) - as.double(D_Banespa[1,1]))/as.double(D_Banespa[1,1])
+
+10000*(sum(diff(ts(D_Banespa))))
+
+(1+mean(log_retorno_D_Banespa))^1499
+prod(1+log_retorno_D_Banespa)
+
+60.8/7.4
+resposta = as.double(D_Banespa[nrow(D_Banespa),1])/as.double(D_Banespa[1,1])*10000
+
+a = log(as.double(D_Banespa[nrow(D_Banespa),1])/as.double(D_Banespa[1,1]))
+b = sum(log_retorno_D_Banespa)
+
+a==b
+```
+a Resposta é `r as.double(D_Banespa[nrow(D_Banespa),1])/as.double(D_Banespa[1,1])`
