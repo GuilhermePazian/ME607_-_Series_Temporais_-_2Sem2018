@@ -11,6 +11,7 @@ output: html_document
 pacotes <- c("moments","ggplot2")
 install.packages(pacotes)
 ```
+
 ```{r}
 #funções utilizadas
 
@@ -139,7 +140,7 @@ energia_data <- read.csv("ENERGIA.csv")
 head(energia_data)
 nrow(energia_data)
 #View(atm_temp_data)
-ts_energia_data <- ts(energia_data$Energia,start = c(1968,1),end = c(1979,9) ,frequency = 12)
+ts_energia_data <- ts(energia_data$Energia,start = c(1968,1),frequency = 12)
 work <- "ts_energia_data"
 print(ts_energia_data)
 
@@ -202,7 +203,7 @@ Note pelo gráfico acima que a série das diferenças de ordem 1 do log da séri
 
 
 #5 
-###(referente à série $A_{9}$ (D-PETRO): Preços diários das ações da Petrobrás PN, de 03/01/1995 a 27/12/2000)
+###(referente à série $A_{9}$ (b) (D-PETRO): Preços diários das ações da Petrobrás PN, de 03/01/1995 a 27/12/2000)
 
 
 ```{r}
@@ -216,7 +217,7 @@ D_Petro <- read.csv("D-PETRO.txt",header = FALSE)
 head(D_Petro)
 nrow(D_Petro)
 #View(atm_temp_data)
-ts_D_Petro <- ts(D_Petro ,start = c(1995,03,01),end = c(2000,27,12) ,frequency =365)
+ts_D_Petro <- ts(D_Petro ,start = c(1995,03,01),frequency = 252)
 work <- "ts_D_Petro"
 print(head(ts_D_Petro))
 
@@ -296,7 +297,7 @@ colnames(M_IBV) <- c("SEP","IBOV","B3","CBOND")
 head(M_IBV)
 nrow(M_IBV)
 
-ts_M_IBV <- ts(M_IBV$IBOV ,start = c(1994,06),end = c(2001,08) ,frequency = 12)
+ts_M_IBV <- ts(M_IBV$IBOV ,start = c(1994,06),frequency = 12)
 work <- "ts_M_IBV"
 print(head(ts_M_IBV))
 
@@ -493,3 +494,145 @@ b = sum(log_retorno_D_Banespa)
 a==b
 ```
 a Resposta é `r as.double(D_Banespa[nrow(D_Banespa),1])/as.double(D_Banespa[1,1])`
+
+
+
+
+#8 
+######(referente à série $A_{9}$ (b) (D-PETRO): Preços diários das ações da Petrobrás PN, de 03/01/1995 a 27/12/2000)
+
+
+```{r}
+head(D_Petro)
+nrow(D_Petro)
+#View(atm_temp_data)
+#ts_D_Petro
+work <- "ts_D_Petro"
+print(head(ts_D_Petro))
+
+```
+
+```{r}
+#gráfico da série
+end(ts_D_Petro)
+start(ts_D_Petro)
+frequency(ts_D_Petro)
+
+ts.plot(ts_D_Petro)
+
+```
+
+```{r}
+#grafico dos logs
+
+ts.plot(log_ts_D_Petro)
+```
+
+```{r}
+#retorno dos logs (log-retorno)
+
+
+length(dif_log_ts_D_Petro)
+
+ts.plot(dif_log_ts_D_Petro)
+```
+
+###a)
+
+```{r}
+
+Descritivas(as.vector(dif_log_ts_D_Petro))
+summary(dif_log_ts_D_Petro)
+```
+##b)
+
+
+Qual dos gráficos abaixo estão certos??
+
+```{r}
+hist(dif_log_ts_D_Petro,probability = TRUE,breaks = 50)
+curve(dnorm(x, mean=mean(dif_log_ts_D_Petro), sd=sd(dif_log_ts_D_Petro)), 
+          col="darkblue", lwd=2, add=TRUE, yaxt="n")
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(data=as.data.frame(dif_log_ts_D_Petro)) + geom_histogram(aes(x= V1,y = ..count../sum(..count..)),bins = 50) + stat_function(fun = dnorm,color="red",args=list(mean=mean(as.vector(data$V1)),sd=sd(as.vector(data$V1)))) + xlim(-.35,+.35) + theme_classic()
+
+```
+
+```{r}
+library(ggplot2)
+ggplot(data=as.data.frame(dif_log_ts_D_Petro)) + geom_histogram(aes(x= V1,y = ..density..),bins = 50) + stat_function(fun = dnorm,color="red",args=list(mean=mean(as.vector(data$V1)),sd=sd(as.vector(data$V1)))) + xlim(-.35,+.35) +theme_classic()
+
+```
+
+```{r}
+library(ggplot2)
+ggplot(data=as.data.frame(dif_log_ts_D_Petro)) + geom_histogram(aes(x=V1,y = ..count../sum(..count..)),bins = 50) + stat_function(fun = dnorm,color="red",args=list(mean=mean(as.vector(data$V1)),sd=sd(as.vector(data$V1)))) + xlim(-.35,+.35) +theme_classic()
+```
+
+```{r}
+library(ggplot2)
+ggplot(data=as.data.frame(dif_log_ts_D_Petro)) + geom_histogram(aes(x=V1,y = ..density..),bins = 50) + xlim(-.35,+.35) +theme_classic()
+
+```
+
+De qualquer maneira a distribuição da série parece ser um pouco leptocurtica, ou seja tem caldas mais leves que a distribuição normal e apresenta um "afinamento" maior em relação à distribuição normal. Apesar de apresentar uma boa aproximação em relação à distribuição normal.
+
+
+##c)
+
+```{r}
+length(dif_log_ts_D_Petro) - 5*252
+
+n <- length(dif_log_ts_D_Petro)/252
+n
+sum(dif_log_ts_D_Petro)/n
+
+
+(252-4)/252 #faltaram 4 dias para formar 6 anos
+sum(dif_log_ts_D_Petro)/5.9
+
+pregoes <- sum(245,248,249,246,246,248)
+pregoes #de 1995 até 2000 site do bovespa
+
+length(dif_log_ts_D_Petro)
+
+length(dif_log_ts_D_Petro) - pregoes
+
+sum(dif_log_ts_D_Petro)/6
+
+  prod(1+diff(ts_D_Petro)/ts_D_Petro) -1
+
+```
+A resposta do livro é simplesmente dividir a soma dos retornos por 6 `r sum(dif_log_ts_D_Petro)/6`
+
+
+##d)
+
+
+```{r}
+prod(1+diff(dif_log_ts_D_Petro)/dif_log_ts_D_Petro) * 10000
+sum(diff(dif_log_ts_D_Petro)/dif_log_ts_D_Petro)
+
+
+10000*(as.double(D_Petro[nrow(D_Petro),1]) - as.double(D_Petro[1,1]))/as.double(D_Petro[1,1])
+
+10000*(sum(diff(ts(D_Petro))))
+
+(1+mean(dif_log_ts_D_Petro))^1498
+prod(1+dif_log_ts_D_Petro)
+
+resposta = as.double(D_Petro[nrow(D_Petro),1])/as.double(D_Petro[1,1])*10000
+
+resposta
+
+a = log(as.double(D_Petro[nrow(D_Petro),1])/as.double(D_Petro[1,1]))
+b = sum(dif_log_ts_D_Petro)
+a
+b
+a==b
+```
+a Resposta é `r resposta`
