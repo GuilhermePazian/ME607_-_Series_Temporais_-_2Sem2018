@@ -1,0 +1,73 @@
+---
+title: "Untitled"
+author: "Guilherme"
+date: "17 de maio de 2018"
+output: pdf_document
+---
+
+Estudo de simulação para problema de estimação por máxima verosimilhança dos parâmetros de um modelo ARMA(1,1) com parâmetros com valores próximos.
+
+```{r}
+
+#inicia o vetor erro
+
+sequencia <- seq(0.41,0.5,by = 0.001)
+
+erro = sequencia
+
+for(i in 1:1000){
+
+N = 1000 #quantidade de simulações
+ARMA_1_1_85 <- function(x) {arima.sim(model = list(ar = x ,ma = -.45),n = N)}
+
+estimacoef_ARMA_1_1 <- function(x) {arima(x,order = c(1,0,1),method = "ML")$coef} 
+
+#When using CSS (conditional sum of squares), it is possible for the autoregressive coefficients to be non-stationary (i.e., they fall outside the region for stationary processes).
+#You can force R to use MLE (maximum likelihood estimation) instead by using the argument method="ML". This is slower but gives better estimates and always returns a stationary model.
+# fonte: https://stackoverflow.com/questions/7233288/non-stationary-seasonal-ar-part-from-css-error-in-r
+
+y <- sapply(sequencia,ARMA_1_1_85)
+
+#acessadados_y <- function(x){return(y[,x])}
+
+
+
+#library(dplyr)
+
+teste <- apply(y,2,estimacoef_ARMA_1_1)
+# %>%  sapply(estimacoef_ARMA_1_1)
+#z <- arima(y[,1],order = c(1,0,1))
+
+
+diferenca <- sequencia -.45
+ARestimado <- teste[1,]
+#plot(diferenca,ARestimado)
+#cor(diferenca,ARestimado)
+
+
+ErroARestimado <- ARestimado - sequencia
+#plot(diferenca,ErroARestimado)
+#cor(diferenca,ErroARestimado)
+
+
+
+MAestimado <- teste[2,]
+ErroMAestimado <- MAestimado + .45 # - - .45 = + .45
+
+erroquadratico = ErroMAestimado^2 + ErroARestimado^2
+
+#plot(diferenca,erroquadratico)
+erro <- cbind(erro,erroquadratico)
+}
+
+
+boxplot(erro[1,],erro[2,],erro[3,],erro[4,],erro[5,],erro[6,],erro[7,],erro[8,],erro[9,],erro[10,])
+
+resumo <- apply(erro,1,summary)
+
+Variancias <- apply(erro,1,var)
+
+
+
+```
+
