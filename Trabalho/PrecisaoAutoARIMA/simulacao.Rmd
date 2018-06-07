@@ -1,0 +1,112 @@
+---
+title: "Untitled"
+author: "Guilherme"
+date: "6 de junho de 2018"
+output: html_document
+---
+
+```{r}
+library(forecast)
+library(dplyr)
+
+performance <- function(n_repeticoes,n_amostras,ordem,ar=0,ma=0) {
+ordem_ar_correta = 0
+ordem_ma_correta = 0
+ordem_correta = 0
+
+  for(i in 1:n_repeticoes){
+if (ar!= 0 & ma!= 0)
+  {arma_simulado = arima.sim(list(order = ordem, ar = ar,ma = ma),n=n_amostras)}
+  else if (ar!=0) 
+    { arma_simulado = arima.sim(list(order = ordem, ar = ar),n=n_amostras)}
+    else if (ma!=0) 
+      {arma_simulado = arima.sim(list(order = ordem, ma = ma),n=n_amostras)}
+    else 
+    {arma_simulado = arima.sim(list(order = ordem),n=n_amostras)}
+    
+x_auto = auto.arima(arma_simulado,seasonal = FALSE,stationary = TRUE)
+ordem_ar_correta <- sum(x_auto$arma[1] == ordem[1],ordem_ar_correta)
+ordem_ma_correta <- sum(x_auto$arma[2] == ordem[3],ordem_ar_correta)
+ordem_correta <- sum(if(x_auto$arma[1] == ordem[1] & x_auto$arma[2] == ordem[3]) 1,ordem_correta)
+  }
+return(list(acertototal = ordem_correta,acertoma = ordem_ma_correta,acertoar = ordem_ar_correta,repeticoes = n_repeticoes,ordem = ordem,coefma = ma,coefar = ar,amostras_simuladas = n_amostras,prop_acertos = ordem_correta/n_repeticoes))
+}
+
+```
+
+
+
+```{r}
+n = 100
+ar.75_0 <- performance(1000,n,c(1,0,0),ar=.75,ma=0)
+ar.5_0 <- performance(1000,n,c(1,0,0),ar=.5,ma=0)
+ar.25_0 <- performance(1000,n,c(1,0,0),ar=.25,ma=0)
+ar.0_0 <- performance(1000,n,c(0,0,0),ar=0,ma=0)
+
+ar.75_.25  <- performance(1000,n,c(1,0,1),ar=.75,ma=.25)
+ar.5_.25 <- performance(1000,n,c(1,0,1),ar=.5,ma=.25)
+ar.25_.25 <- performance(1000,n,c(1,0,1),ar=.25,ma=.25)
+ar.0_.25 <- performance(1000,n,c(0,0,1),ma=.25)
+
+ar.75_.5 <- performance(1000,n,c(1,0,1),ar=.75,ma=.5)
+ar.5_.5 <- performance(1000,n,c(1,0,1),ar=.5,ma=.5)
+ar.25_.5 <- performance(1000,n,c(1,0,1),ar=.25,ma=.5)
+ar.0_.5 <- performance(1000,n,c(0,0,1),ma=.5)
+
+
+ar.75_.75 <- performance(1000,n,c(1,0,1),ar=.75,ma=.75)
+ar.5_.75 <- performance(1000,n,c(1,0,1),ar=.5,ma=.75)
+ar.25_.75  <- performance(1000,n,c(1,0,1),ar=.25,ma=.75)
+ar.0_.75  <- performance(1000,n,c(0,0,1),ma=.75)
+```
+
+
+
+```{r}
+n = 500
+ar2.75_0 <- performance(1000,n,c(1,0,0),ar=.75)
+ar2.5_0 <- performance(1000,n,c(1,0,0),ar=.5)
+ar2.25_0 <- performance(1000,n,c(1,0,0),ar=.25)
+ar2.0_0 <- performance(1000,n,c(0,0,0),ar=0)
+
+ar2.75_.25  <- performance(1000,n,c(1,0,1),ar=.75,ma=.25)
+ar2.5_.25 <- performance(1000,n,c(1,0,1),ar=.5,ma=.25)
+ar2.25_.25 <- performance(1000,n,c(1,0,1),ar=.25,ma=.25)
+ar2.0_.25 <- performance(1000,n,c(0,0,1),ma=.25)
+
+ar2.75_.5 <- performance(1000,n,c(1,0,1),ar=.75,ma=.5)
+ar2.5_.5 <- performance(1000,n,c(1,0,1),ar=.5,ma=.5)
+ar2.25_.5 <- performance(1000,n,c(1,0,1),ar=.25,ma=.5)
+ar2.0_.5 <- performance(1000,n,c(0,0,1),ma=.5)
+
+
+ar2.75_.75 <- performance(1000,n,c(1,0,1),ar=.75,ma=.75)
+ar2.5_.75 <- performance(1000,n,c(1,0,1),ar=.5,ma=.75)
+ar2.25_.75  <- performance(1000,n,c(1,0,1),ar=.25,ma=.75)
+ar2.0_.75  <- performance(1000,n,c(0,0,1),ma=.75)
+```
+
+
+```{r}
+n = 1000
+ar3.75_0 <- performance(1000,n,c(1,0,0),ar=.75)
+ar3.5_0 <- performance(1000,n,c(1,0,0),ar=.5)
+ar3.25_0 <- performance(1000,n,c(1,0,0),ar=.25)
+ar3.0_0 <- performance(1000,n,c(0,0,0),ar=0)
+
+ar3.75_.25  <- performance(1000,n,c(1,0,1),ar=.75,ma=.25)
+ar3.5_.25 <- performance(1000,n,c(1,0,1),ar=.5,ma=.25)
+ar3.25_.25 <- performance(1000,n,c(1,0,1),ar=.25,ma=.25)
+ar3.0_.25 <- performance(1000,n,c(0,0,1),ma=.25)
+
+ar3.75_.5 <- performance(1000,n,c(1,0,1),ar=.75,ma=.5)
+ar3.5_.5 <- performance(1000,n,c(1,0,1),ar=.5,ma=.5)
+ar3.25_.5 <- performance(1000,n,c(1,0,1),ar=.25,ma=.5)
+ar3.0_.5 <- performance(1000,n,c(0,0,1),ma=.5)
+
+
+ar3.75_.75 <- performance(1000,n,c(1,0,1),ar=.75,ma=.75)
+ar3.5_.75 <- performance(1000,n,c(1,0,1),ar=.5,ma=.75)
+ar3.25_.75  <- performance(1000,n,c(1,0,1),ar=.25,ma=.75)
+ar3.0_.75  <- performance(1000,n,c(0,0,1),ma=.75)
+```
